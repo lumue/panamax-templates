@@ -1,0 +1,43 @@
+---
+name: elk
+description: ''
+keywords: ''
+type: Default
+documentation: ''
+images:
+- name: logstash
+  source: ehazlett/logstash:latest
+  type: Default
+  ports:
+  - host_port: '5001'
+    container_port: '5000'
+    proto: TCP
+  - host_port: '5001'
+    container_port: '5000'
+    proto: UDP
+  links:
+  - service: es
+    alias: elasticsearch
+  command: "-f /etc/logstash.conf.sample"
+- name: kibana
+  source: ehazlett/kibana:latest
+  type: Default
+  ports:
+  - host_port: '80'
+    container_port: '80'
+    proto: TCP
+- name: es
+  source: elasticsearch:latest
+  type: Default
+  ports:
+  - host_port: '9200'
+    container_port: '9200'
+    proto: TCP
+  - host_port: '9300'
+    container_port: '9300'
+    proto: TCP
+  volumes:
+  - host_path: "/data/elasticsearch/config"
+    container_path: "/usr/share/elasticsearch/config"
+  - host_path: "/data/elasticsearch/data"
+    container_path: "/usr/share/elasticsearch/data"
